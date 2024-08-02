@@ -3,6 +3,7 @@ using Unity.Entities;
 
 namespace ECS.Systems
 {
+    [UpdateBefore(typeof(MovementSystem))]
     public partial struct ShipMovementDirectionSystem : ISystem
     {
         public void OnCreate(ref SystemState state)
