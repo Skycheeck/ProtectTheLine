@@ -1,3 +1,4 @@
+using System;
 using ECS.Components;
 using Unity.Entities;
 using UnityEngine;
@@ -21,6 +22,12 @@ namespace ECS.Authoring
                     MaxY = position.y + localScale.y / 2,
                 });
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = new Color(1f, 0.45f, 0.08f, 0.24f);
+            Gizmos.DrawWireCube(transform.position, transform.localScale);
         }
     }
 }
