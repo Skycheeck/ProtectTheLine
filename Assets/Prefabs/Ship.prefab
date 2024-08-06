@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6025381405010000664}
   - component: {fileID: 2177898465349868350}
   - component: {fileID: 4415974297373641691}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Ship
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,7 +140,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1427192312709332441}
   - component: {fileID: 6614501664173821750}
-  m_Layer: 0
+  - component: {fileID: 3480910254869085210}
+  m_Layer: 3
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,3 +177,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BulletPrefab: {fileID: 4955808924363446371, guid: 550c7da8d3cf6a84783a1f5649ac2a26, type: 3}
   TimeToFire: 1
+--- !u!114 &3480910254869085210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1522767416782568601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c72b235ac6d4467bb7e4f9907e477cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollidesWith:
+    serializedVersion: 2
+    m_Bits: 64
