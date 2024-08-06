@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 5899259013658292081}
   - component: {fileID: 2133829153870516475}
   - component: {fileID: 5295541444104323770}
-  m_Layer: 0
+  - component: {fileID: 9166578364957072388}
+  m_Layer: 3
   m_Name: Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,6 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1557d5baec484318994c41ccd03b5d34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  DamageOnHit: 1
 --- !u!114 &2133829153870516475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,3 +145,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TimeToDestroy: 3
+--- !u!114 &9166578364957072388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4955808924363446371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c72b235ac6d4467bb7e4f9907e477cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollidesWith:
+    serializedVersion: 2
+    m_Bits: 64

@@ -6,12 +6,14 @@ namespace ECS.Authoring
 {
     public class BulletAuthoring : MonoBehaviour
     {
+        public float DamageOnHit;
+
         public class BulletBaker : Baker<BulletAuthoring>
         {
             public override void Bake(BulletAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.Dynamic);
-                AddComponent<Bullet>(entity);
+                AddComponent(entity, new Bullet {DamageOnHit = authoring.DamageOnHit});
             }
         }
     }
