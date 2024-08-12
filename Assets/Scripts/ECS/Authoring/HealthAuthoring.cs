@@ -6,7 +6,7 @@ namespace ECS.Authoring
 {
     public class HealthAuthoring : MonoBehaviour
     {
-        public float Health;
+        public int Health;
 
         public class HealthBaker : Baker<HealthAuthoring>
         {

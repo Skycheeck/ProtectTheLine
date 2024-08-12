@@ -4,6 +4,6 @@ namespace ECS.Components
 {
     public struct Bullet : IComponentData
     {
-        public float DamageOnHit;
+        public int DamageOnHit;
     }
 }

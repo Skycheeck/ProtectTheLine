@@ -6,7 +6,7 @@ namespace ECS.Authoring
 {
     public class BulletAuthoring : MonoBehaviour
     {
-        public float DamageOnHit;
+        public int DamageOnHit;
 
         public class BulletBaker : Baker<BulletAuthoring>
         {
