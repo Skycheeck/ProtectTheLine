@@ -1,10 +1,11 @@
 ﻿using ECS.Components;
 using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using RaycastHit = Unity.Physics.RaycastHit;
+using UnityEngine;
 
 namespace ECS.Systems
 {
@@ -27,16 +28,16 @@ namespace ECS.Systems
                 gun.ValueRW.FireTimer = gun.ValueRO.TimeToFire;
 
                 PhysicsWorldSingleton physicsWorldSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
-                RaycastInput raycastInput = new()
-                {
-                    Start = localToWorld.ValueRO.Position,
-                    End = localToWorld.ValueRO.Position + new float3(0, 100, 0),
-                    Filter = new CollisionFilter {BelongsTo = collisionLayer.ValueRO.BelongsTo, CollidesWith = collisionLayer.ValueRO.CollidesWith}
-                };
-                if (!physicsWorldSingleton.CastRay(raycastInput, out RaycastHit _)) continue;
 
+                NativeList<DistanceHit> distanceHits = new(Allocator.Temp);
+                CollisionFilter collisionFilter = new() {BelongsTo = collisionLayer.ValueRO.BelongsTo, CollidesWith = collisionLayer.ValueRO.CollidesWith};
+
+                if (!physicsWorldSingleton.OverlapSphere(localToWorld.ValueRO.Position, gun.ValueRO.FireRadius, ref distanceHits, collisionFilter)) continue;
+
+                float3 direction3 = math.normalize(distanceHits[0].Position - localToWorld.ValueRO.Position);
                 Entity bulletEntity = state.EntityManager.Instantiate(gun.ValueRO.BulletPrefab);
                 SystemAPI.GetComponentRW<LocalTransform>(bulletEntity).ValueRW.Position = localToWorld.ValueRO.Position;
+                SystemAPI.SetComponent(bulletEntity, new MovementDirection() { Direction = new float2 { x = direction3.x, y = direction3.y }});
             }
         }
     }

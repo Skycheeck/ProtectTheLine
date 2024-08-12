@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed:
-    x: 0
+    x: 30
     y: 30
 --- !u!114 &5899259013658292081
 MonoBehaviour:
