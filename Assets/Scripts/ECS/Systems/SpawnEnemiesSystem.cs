@@ -16,6 +16,8 @@ namespace ECS.Systems
         [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
+            state.RequireForUpdate<EnemiesLeft>();
+            
             state.EntityManager.AddComponent<EnemySpawnTimer>(state.SystemHandle);
             ResetTimer(ref state);
             _enemyFactory = new EnemyFactory();
@@ -24,6 +26,10 @@ namespace ECS.Systems
         [BurstCompile]
         public void OnUpdate(ref SystemState state)
         {
+            RefRW<EnemiesLeft> enemiesLeft = SystemAPI.GetSingletonRW<EnemiesLeft>();
+            
+            if (enemiesLeft.ValueRO.Value < 1) return;
+            
             RefRW<EnemySpawnTimer> enemySpawnTimer = SystemAPI.GetComponentRW<EnemySpawnTimer>(state.SystemHandle);
             ref EnemySpawnTimer spawnTimer = ref enemySpawnTimer.ValueRW;
             spawnTimer.Time -= SystemAPI.Time.DeltaTime;
@@ -34,8 +40,10 @@ namespace ECS.Systems
             Entity entity = entityArray[Random.Range(0, entityArray.Length)];
             Entity enemyPrefab = SystemAPI.GetComponentRO<EnemySpawnPointComponent>(entity).ValueRO.EnemyPrefab;
             float3 position = SystemAPI.GetComponentRO<LocalToWorld>(entity).ValueRO.Position;
+            
             _enemyFactory.Create(state.EntityManager, enemyPrefab, position);
             ResetTimer(ref state);
+            enemiesLeft.ValueRW.Value--;
         }
         
 
