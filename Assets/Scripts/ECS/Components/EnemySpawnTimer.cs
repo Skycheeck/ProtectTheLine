@@ -4,6 +4,7 @@ namespace ECS.Components
 {
     public struct EnemySpawnTimer : IComponentData
     {
-        public float Time;
+        public float Min, Max;
+        public float TimeLeft;
     }
 }

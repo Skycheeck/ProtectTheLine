@@ -17,9 +17,8 @@ namespace ECS.Systems
         public void OnCreate(ref SystemState state)
         {
             state.RequireForUpdate<EnemiesLeft>();
+            state.RequireForUpdate<EnemySpawnTimer>();
             
-            state.EntityManager.AddComponent<EnemySpawnTimer>(state.SystemHandle);
-            ResetTimer(ref state);
             _enemyFactory = new EnemyFactory();
         }
 
@@ -30,11 +29,10 @@ namespace ECS.Systems
             
             if (enemiesLeft.ValueRO.Value < 1) return;
             
-            RefRW<EnemySpawnTimer> enemySpawnTimer = SystemAPI.GetComponentRW<EnemySpawnTimer>(state.SystemHandle);
-            ref EnemySpawnTimer spawnTimer = ref enemySpawnTimer.ValueRW;
-            spawnTimer.Time -= SystemAPI.Time.DeltaTime;
+            RefRW<EnemySpawnTimer> enemySpawnTimer = SystemAPI.GetSingletonRW<EnemySpawnTimer>();
+            enemySpawnTimer.ValueRW.TimeLeft -= SystemAPI.Time.DeltaTime;
                 
-            if (spawnTimer.Time > 0f) return;
+            if (enemySpawnTimer.ValueRO.TimeLeft > 0f) return;
 
             NativeArray<Entity> entityArray = SystemAPI.QueryBuilder().WithAll<EnemySpawnPointComponent>().WithAll<LocalToWorld>().Build().ToEntityArray(Allocator.Temp);
             Entity entity = entityArray[Random.Range(0, entityArray.Length)];
@@ -42,14 +40,8 @@ namespace ECS.Systems
             float3 position = SystemAPI.GetComponentRO<LocalToWorld>(entity).ValueRO.Position;
             
             _enemyFactory.Create(state.EntityManager, enemyPrefab, position);
-            ResetTimer(ref state);
+            enemySpawnTimer.ValueRW.TimeLeft = Random.Range(enemySpawnTimer.ValueRO.Min, enemySpawnTimer.ValueRO.Max);
             enemiesLeft.ValueRW.Value--;
-        }
-        
-
-        private void ResetTimer(ref SystemState state)
-        {
-            SystemAPI.SetComponent(state.SystemHandle, new EnemySpawnTimer {Time = 3f});
         }
     }
 }
