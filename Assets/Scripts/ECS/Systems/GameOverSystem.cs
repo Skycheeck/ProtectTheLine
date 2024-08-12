@@ -1,7 +1,9 @@
 using System.Linq;
 using DefaultNamespace;
 using ECS.Components;
+using Unity.Collections;
 using Unity.Entities;
+using UnityEngine;
 
 namespace ECS.Systems
 {
@@ -14,28 +16,34 @@ namespace ECS.Systems
 
         public void OnUpdate(ref SystemState state)
         {
-            if (CheckForVictory(ref state)) return;
-            CheckForDefeat(ref state);
+            if (!SystemAPI.QueryBuilder().WithAll<GameIsOver>().Build().IsEmpty) return;
+            EntityCommandBuffer ecb = new(Allocator.Temp);
+            
+            if (CheckForVictory(ref state, ref ecb)) return;
+            CheckForDefeat(ref state, ref ecb);
+            
+            ecb.Playback(state.EntityManager);
+            ecb.Dispose();
         }
 
-        private bool CheckForVictory(ref SystemState state)
+        private bool CheckForVictory(ref SystemState state, ref EntityCommandBuffer entityCommandBuffer)
         {
             if (SystemAPI.GetSingleton<EnemiesLeft>().Value > 0) return false;
             if (!SystemAPI.QueryBuilder().WithAll<Enemy>().Build().IsEmpty) return false;
             
-            state.Enabled = false;
+            CreateGameIsOverEntity(ref state, ref entityCommandBuffer);
             ShowRestartScreen(ref state, "Victory");
             return true;
 
         }
 
-        private void CheckForDefeat(ref SystemState state)
+        private void CheckForDefeat(ref SystemState state, ref EntityCommandBuffer entityCommandBuffer)
         {
             foreach (RefRO<Health> health in SystemAPI.Query<RefRO<Health>>().WithAll<Player>().WithChangeFilter<Health>())
             {
                 if (!(health.ValueRO.Value <= 0)) continue;
                 
-                state.Enabled = false;
+                CreateGameIsOverEntity(ref state, ref entityCommandBuffer);
                 ShowRestartScreen(ref state, "Defeat");
             }
         }
@@ -45,6 +53,12 @@ namespace ECS.Systems
             RestartScreen restartScreen = RestartScreen.Instance;
             restartScreen.gameObject.SetActive(true);
             restartScreen.SetTitle(title);
+        }
+
+        private void CreateGameIsOverEntity(ref SystemState state, ref EntityCommandBuffer ecb)
+        {
+            Entity entity = SystemAPI.GetSingletonEntity<EnemiesLeft>();
+            ecb.AddComponent(entity, new GameIsOver());
         }
     }
 }

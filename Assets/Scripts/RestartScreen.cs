@@ -1,7 +1,5 @@
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace DefaultNamespace
@@ -10,6 +8,8 @@ namespace DefaultNamespace
     {
         [SerializeField] private TMP_Text _title;
         [SerializeField] private Button _restartButton;
+        [SerializeField] private LevelManager _levelManager;
+        
 
         public void SetTitle(string title)
         {
@@ -24,12 +24,18 @@ namespace DefaultNamespace
 
         private void Start()
         {
+            Disable();
+        }
+
+        private void Disable()
+        {
             gameObject.SetActive(false);
         }
 
-        private static void RestartGame()
+        private void RestartGame()
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            Disable();
+            _levelManager.RestartGame();
         }
     }
 }
