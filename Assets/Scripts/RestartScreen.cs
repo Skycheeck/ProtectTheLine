@@ -6,22 +6,28 @@ using UnityEngine.UI;
 
 namespace DefaultNamespace
 {
-    public class RestartScreen : MonoBehaviour
+    public class RestartScreen : Singleton<RestartScreen>
     {
         [SerializeField] private TMP_Text _title;
         [SerializeField] private Button _restartButton;
-
-        private void Awake()
-        {
-            _restartButton.onClick.AddListener(RestartGame);
-        }
 
         public void SetTitle(string title)
         {
             _title.text = title;
         }
 
-        private void RestartGame()
+        protected override void Awake()
+        {
+            base.Awake();
+            _restartButton.onClick.AddListener(RestartGame);
+        }
+
+        private void Start()
+        {
+            gameObject.SetActive(false);
+        }
+
+        private static void RestartGame()
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
